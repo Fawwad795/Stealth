@@ -1,0 +1,10 @@
+# Build files
+*.o
+*.out
+*.exe
+CMakeFiles/
+CMakeCache.txt
+
+# CLion-specific files
+.idea/
+cmake-build-debug/
