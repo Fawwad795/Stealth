@@ -19,4 +19,5 @@ add_executable(Stealth ${SOURCES}
         include/DoublyLinkedList.h
         include/Page.h
         include/Record.h
-        src/Record.cpp)
+        src/Record.cpp
+        src/Page.cpp)

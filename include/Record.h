@@ -1,3 +1,4 @@
+//declaration file of the Record class
 #ifndef RECORD_H
 #define RECORD_H
 

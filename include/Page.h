@@ -1,19 +1,49 @@
+//declaration file of the Record class
 #ifndef PAGE_H
 #define PAGE_H
 
-// Class Page that will hold records
+#include <vector>
+#include <cstring>
+#include <stdexcept>
+#include <string> //for memcpy function
+#include "Record.h" //to include record class
+
+//Class Page that will hold records
 class Page {
 public:
-    // Constructor to initialize the Page with a pageID
-    Page(int id) {
-        pageID = id;
-        freeSpace = PAGE_SIZE; // Optionally initialize the data array or other members here
-    }
+    static const int PAGE_SIZE = 4096; //fixed page size: 4 kilobytes
 
-    static const int PAGE_SIZE = 4096;  // 4 KB page size
-    char data[PAGE_SIZE];               // Storage for data (records)
-    int freeSpace;                      // Tracks free space for adding records
-    int pageID;                         // Page ID to uniquely identify the page
+    //constructor to initialize a page object
+    Page(int id);
+
+    //function to add a record to the page
+    bool addRecord(const Record& record);
+
+    //function to retrieve a record from the page by its index
+    Record getRecord(int index) const;
+
+    //function to remove a record from the page by its index
+    bool removeRecord(int index);
+
+    //getter function for bytes of free space available in the page
+    int getFreeSpace() const;
+
+    //getter function for the number of records in the page
+    int getRecordCount() const;
+
+private:
+    char data[PAGE_SIZE];       //raw data storage for records
+    int pageID;                 //unique ID for the page
+    int freeSpace;              //track available free space
+    int recordCount;            //keep track of the number of records present in this page
+
+    //struct for storing the metadata for each record
+    struct RecordMetadata {
+        int offset;             //offset of a certain record in the 'data' array
+        int length;             //length of the record in bytes
+    };
+
+    vector<RecordMetadata> metadata;  //vector for storing metadata for each record
 };
 
 #endif //PAGE_H
