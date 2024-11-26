@@ -17,4 +17,6 @@ add_executable(Stealth ${SOURCES}
         include/BufferManager.h
         src/DoublyLinkedList.cpp
         include/DoublyLinkedList.h
-        include/Page.h)
+        include/Page.h
+        include/Record.h
+        src/Record.cpp)
