@@ -13,4 +13,8 @@ file(GLOB SOURCES "src/*.cpp")
 
 # Create the executable
 add_executable(Stealth ${SOURCES}
-        src/StorageManager.cpp)
+        src/BufferManager.cpp
+        include/BufferManager.h
+        src/DoublyLinkedList.cpp
+        include/DoublyLinkedList.h
+        include/Page.h)
