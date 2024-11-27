@@ -5,6 +5,15 @@
 Record::Record(int id, const vector<string> &attributes)
     : id(id), attributes(attributes) {}
 
+//a getter method for record ID
+int Record::getID() const {
+    return id;
+}
+
+vector<string> Record::getAttributes() {
+    return attributes;
+}
+
 //serializing function that converts attributes to a single string
 string Record::serialize() const {
     //creating an output string stream, that will help in appending strings easily, without needing concatenation

@@ -15,6 +15,8 @@ public:
     //a getter method for record ID
     int getID() const;
 
+    vector<string> getAttributes();
+
     //a serialization function to convert attributes to a single string
     string serialize() const;
 

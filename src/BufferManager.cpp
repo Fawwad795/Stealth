@@ -61,7 +61,7 @@ void BufferManager::flushPage(int pageID) {
     //if the page exists in the buffer, write it onto the disk
     if(iterator != bufferPool.end()) {
         cout << "Flushing page " << pageID << " to disk." << endl;
-        iterator->second->writeToDisk();
+        //iterator->second->writeToDisk();
     }
     //if the page does not exist in the buffer
     else {

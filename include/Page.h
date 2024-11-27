@@ -3,15 +3,16 @@
 #define PAGE_H
 
 #include <vector>
-#include <cstring>
+#include <cstring> //for memcpy function
 #include <stdexcept>
-#include <string> //for memcpy function
+#include <string>
 #include "Record.h" //to include record class
 
 //Class Page that will hold records
 class Page {
 public:
     static const int PAGE_SIZE = 4096; //fixed page size: 4 kilobytes
+    //static const int PAGE_SIZE = 90;
 
     //constructor to initialize a page object
     Page(int id);
@@ -31,6 +32,9 @@ public:
     //getter function for the number of records in the page
     int getRecordCount() const;
 
+    //function to defragment the page time to time
+    void defragment();
+
 private:
     char data[PAGE_SIZE];       //raw data storage for records
     int pageID;                 //unique ID for the page
@@ -39,11 +43,13 @@ private:
 
     //struct for storing the metadata for each record
     struct RecordMetadata {
+        int id;
         int offset;             //offset of a certain record in the 'data' array
         int length;             //length of the record in bytes
     };
 
     vector<RecordMetadata> metadata;  //vector for storing metadata for each record
+    vector<pair<int, int>> freeList;  //tracks free space in the data array
 };
 
 #endif //PAGE_H
