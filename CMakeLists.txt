@@ -20,4 +20,6 @@ add_executable(Stealth ${SOURCES}
         include/Page.h
         include/Record.h
         src/Record.cpp
-        src/Page.cpp)
+        src/Page.cpp
+        include/FileManager.h
+        src/FileManager.cpp)
