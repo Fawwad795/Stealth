@@ -7,6 +7,13 @@
 
 class FileManager {
 public:
+    //struct for storing file metadata
+    struct FileMetadata {
+        int numTables;      //number of tables in the database
+        int freePageStart;  //starting page ID for free pages (-1 if no free pages)
+    };
+    FileMetadata metadata;  //metadata for the database file
+
     //constructor
     FileManager(const string& fileName);
 
@@ -28,17 +35,10 @@ public:
     //function for reading the file metadata
     void loadMetadata();
 
+
 private:
     string fileName;    //name of the database file
     fstream fileStream; //stream for file operations
-
-    //write initial metadata to the file
-    struct FileMetadata {
-        int numTables;      //number of tables in the database
-        int freePageStart;  //starting page ID for free pages (-1 if no free pages)
-    };
-
-    FileMetadata metadata;  //metadata for the database file
 };
 
 #endif //FILEMANAGER_H

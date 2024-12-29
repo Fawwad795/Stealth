@@ -30,26 +30,16 @@ public:
     //Constructor for Doubly Linked List class
     DoublyLinkedList();
 
-    //function to check if the list is empty
-    bool empty() const;
-
-    //function to insert a new element/value in the list
-    void insertToHead(T value);
-
-    //function to remove an element from the head of the list
-    void popFront();
-
-    //function to peak the element present at the head of the list
-    T front() const;
-
-    //function to remove a specific element from the list
-    void remove(T value);
-
-    //function to display the list
-    void display() const;
-
-    //function to display the list in the reverse order
-    void displayReversed() const;
+    bool empty() const;                     //method to check if the list is empty
+    void insertToHead(T value);             //method to insert a new element/value in the list
+    void deleteFromHead();                  //method to remove an element from the head of the list
+    T peekHead() const;                     //method to peek the element present at the head of the list
+    void remove(T value);                   //method to remove a specific element from the list
+    void display() const;                   //method to display the list
+    void displayReversed() const;           //method to display the list in the reverse order
+    T getNext(const T& value) const;        //method to get the next element given a value
+    bool contains(const T& value) const;    //method to check if a value exists in the list
+    int getPosition(const T& value) const;  //method to get current position of a value
 
 private:
     Node<T>* head;

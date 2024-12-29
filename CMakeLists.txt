@@ -22,4 +22,7 @@ add_executable(Stealth ${SOURCES}
         src/Record.cpp
         src/Page.cpp
         include/FileManager.h
-        src/FileManager.cpp)
+        src/FileManager.cpp
+        include/TransactionManager.h
+        src/TransactionManager.cpp
+        include/BPlusTree.h)

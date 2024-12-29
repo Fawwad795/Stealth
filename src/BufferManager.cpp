@@ -70,28 +70,25 @@ void BufferManager::flushPage(int pageID) {
 }
 
 
-
 //function for retrieving a page from the buffer pool of the buffer manager
 PagePtr BufferManager::getPage(int pageID) {
-    auto iterator = bufferPool.find(pageID);
+    cout << "Attempting to get page " << pageID << endl;
 
-    //if the page is found in the buffer, move it to the back of the page usage order list, to indicate it has been recently accessed
-    if(iterator != bufferPool.end()) {
-        cout << "Page " << pageID << " found in buffer" << endl;
+    auto iterator = bufferPool.find(pageID);
+    if (iterator != bufferPool.end()) {
+        cout << "Page found in buffer" << endl;
         pageUsageOrder.remove(pageID);
         pageUsageOrder.insertToHead(pageID);
-
-        //return the page
         return iterator->second;
     }
 
-    //if the page is not found in the buffer, load it from the disk
-    cout << "Page " << pageID << " not in buffer. Loading it from disk..." << endl;
+    cout << "Page not in buffer, loading from disk..." << endl;
     loadPage(pageID);
+    cout << "Page loaded into buffer" << endl;
 
-    //then return the page
     return bufferPool[pageID];
 }
+
 
 //function for evicting a page from the buffer when it gets full
 void BufferManager::evictPage() {
@@ -101,15 +98,66 @@ void BufferManager::evictPage() {
         throw runtime_error("Eviction failed: Buffer pool is empty.");
     }
 
-    //else if not empty, evict the least recently used page (front of the usage list)
-    int pageIDToEvict = pageUsageOrder.front();
-    pageUsageOrder.popFront();
+    //finding the first unpinned page in Least Recently Used LRU order
+    int pageIDToEvict = -1;
+    auto current = pageUsageOrder.peekHead();
+
+    while (current != -1) {
+        if (!isPinned(current)) {
+            pageIDToEvict = current;
+            break;
+        }
+
+        //moving to the next page in LRU order
+        current = pageUsageOrder.getNext(current);
+    }
+
+    if (pageIDToEvict) {
+        throw runtime_error("All pages pinned, cannot evict");
+    }
 
     cout << "Evicting page " << pageIDToEvict << " from buffer." << endl;
 
-    //flushing the page to the disk before removing it from the buffer pool
+    //removing the page from the LRU list and buffer pool
+    pageUsageOrder.remove(pageIDToEvict);
     flushPage(pageIDToEvict);
-
+    //flushing the page to the disk before removing it from the buffer pool
+    bufferPool.erase(pageIDToEvict);
     //removing the page from the buffer pool
     bufferPool.erase(pageIDToEvict);
+}
+
+//checks if a page is pinned and shouldn't be evicted
+bool BufferManager::isPinned(int pageID) const {
+    auto it = pinCount.find(pageID);
+    return it != pinCount.end() && it->second > 0;
+}
+
+//pins a page if not already in the buffer pool
+void BufferManager::pinPage(int pageID) {
+    // Ensure page is in buffer
+    if (bufferPool.find(pageID) == bufferPool.end()) {
+        loadPage(pageID);
+    }
+
+    // Increment pin count
+    pinCount[pageID]++;
+}
+
+//unpin a page if operation on a page finishes
+void BufferManager::unpinPage(int pageID) {
+    auto it = pinCount.find(pageID);
+    if (it != pinCount.end() && it->second > 0) {
+        it->second--;
+
+        //if pin count reaches 0, page becomes candidate for eviction
+        if (it->second == 0) {
+            pinCount.erase(it);
+        }
+    }
+}
+
+//function for helping prevent buffer overflowdk
+bool BufferManager::hasSpaceForNewPage() const {
+    return bufferPool.size() < MAX_BUFFER_SIZE;
 }

@@ -26,7 +26,7 @@ void DoublyLinkedList<T>::insertToHead(T value) {
 
 //popFront function implementation to remove an element from the head of the list
 template <typename T>
-void DoublyLinkedList<T>::popFront() {
+void DoublyLinkedList<T>::deleteFromHead() {
     if (empty()) {      //if list is empty, print error
         std::cerr << "List is empty!\n";
     } else {            //else if list is not empty and...
@@ -43,7 +43,7 @@ void DoublyLinkedList<T>::popFront() {
 
 //front function to get value at the head of the list
 template <typename T>
-T DoublyLinkedList<T>::front() const {
+T DoublyLinkedList<T>::peekHead() const {
     if (empty()) {
         throw std::runtime_error("List is empty!");
     }
@@ -122,5 +122,58 @@ void DoublyLinkedList<T>::displayReversed() const {
     }
 }
 
-// Explicit template instantiation (for int type)
-template class DoublyLinkedList<int>;
+/*// Explicit template instantiation (for int type)
+template class DoublyLinkedList<int>;*/
+
+template<typename T>
+T DoublyLinkedList<T>::getNext(const T &value) const {
+    Node<T>* current = head;
+
+    //linearly searching for the node with the given value
+    while (current != nullptr) {
+        if (current->data == value) {
+            //if found the value, return the next element's value
+            //if it exists, otherwise return a sentinel value
+            if (current->next != nullptr) {
+                return current->next->data;
+            }
+            break;
+        }
+        current = current->next;
+    }
+
+    //if value not found or no next element, return sentinel value
+    //for integer type, we can use -1 as sentinel
+    //for other types, you might need a different approach
+    return T{};  //or return sentinel value appropriate for type T
+}
+
+template<typename T>
+bool DoublyLinkedList<T>::contains(const T& value) const {
+    Node<T>* current = head;
+
+    while (current != nullptr) {
+        if (current->data == value) {
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+
+template<typename T>
+int DoublyLinkedList<T>::getPosition(const T& value) const {
+    Node<T>* current = head;
+    int position = 0;
+
+    while (current != nullptr) {
+        if (current->data == value) {
+            return position;
+        }
+        current = current->next;
+        position++;
+    }
+
+    return -1;  // Value not found
+}
