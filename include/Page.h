@@ -7,6 +7,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include "BufferManager.h"
 #include "Record.h" //to include record class
 
 class TransactionManager;
@@ -39,6 +40,8 @@ public:
         int nextLeafPage;   //for leaf node linking
         int prevLeafPage;    //for bidirectional traversal
     };
+
+    PageHeader& getHeader() const { return header; }
 
     //struct for storing the metadata for each record
     struct RecordMetadata {
@@ -77,19 +80,67 @@ public:
     int getNextLeafPage() const;                    //for getting the next leaf page
     void setNextLeafPage(int pageID);               //for setting the next page page into a leaf
 
+    void splitNode(Page* newPage);
+    void mergeWith(Page* siblingPage);
+
+    // New methods for B+ tree support
+    vector<int> getIndexKeys() const;
+    vector<RecordPtr> getIndexRecordPtrs() const;
+    void insertIndexEntry(int key, const RecordPtr& recordPtr);
+    void removeIndexEntry(int position);
+
+    static const int MIN_KEYS = 2;  // Minimum keys per node
+    static const int MAX_KEYS = 4;  // Maximum keys per node
+
+    struct IndexEntry {
+        int key;                 // The key value for this entry
+
+        // Using a union to save space since an entry will never need both pointers
+        union {
+            RecordPtr recordPtr;     // For leaf nodes: points to actual record
+            int childPageID;         // For internal nodes: points to child page
+        };
+
+        // Constructors for different node types
+        // For leaf nodes
+        IndexEntry(int k, const RecordPtr& ptr)
+            : key(k), recordPtr(ptr) {}
+
+        // For internal nodes
+        IndexEntry(int k, int pageID)
+            : key(k), childPageID(pageID) {}
+    };
+
 private:
     PageHeader header;                              //metadata structure for the page
     char data[PAGE_SIZE - sizeof(PageHeader)];      //raw data storage for records, remaining data for actual data
     vector<RecordMetadata> metadata;                //vector for storing metadata for each record
     vector<pair<int, int>> freeList;  //tracks free space in the data array
 
-    //private helper methods
-    void updateChecksum();
-    bool validateChecksum() const;
+    vector<IndexEntry> indexEntries;  // Stores all index entries for this page
 
-    //new helper methods for index management
-    void initializeIndexStructures();
-    void validateIndexOperation() const;
+    // Add these helper methods for B+ tree operations
+    void addIndexEntry(int key, const RecordPtr& recordPtr) {
+        if (!isLeafPage()) {
+            throw runtime_error("Cannot add record pointer to non-leaf page");
+        }
+        indexEntries.emplace_back(key, recordPtr);
+    }
+
+    void addIndexEntry(int key, int childPageID) {
+        if (isLeafPage()) {
+            throw runtime_error("Cannot add child page ID to leaf page");
+        }
+        indexEntries.emplace_back(key, childPageID);
+    }
+
+    vector<IndexEntry> getIndexEntries() const {
+        return indexEntries;
+    }
+
+    void clearIndexEntries() {
+        indexEntries.clear();
+    }
 };
 
 #endif //PAGE_H

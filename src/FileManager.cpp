@@ -150,6 +150,69 @@ void FileManager::loadMetadata() {
     fileStream.close();
 }
 
+int FileManager::allocateNewPage() {
+    // First check if we have any recycled pages available
+    if (!freePageList.empty()) {
+        int pageID = freePageList.back();
+        freePageList.pop_back();
+
+        // Update metadata
+        metadata.freePageStart = freePageList.empty() ? -1 : freePageList.back();
+        updateMetaData();
+
+        return pageID;
+    }
+
+    // If no recycled pages, create a new one at the end of file
+    int newPageID = totalPages++;
+
+    // Calculate the offset for the new page
+    long offset = PAGE_HEADER_SIZE + (newPageID * Page::PAGE_SIZE);
+
+    // Open file in append mode
+    fileStream.open(fileName, ios::in | ios::out | ios::binary);
+    if (!fileStream) {
+        throw runtime_error("Failed to open file for page allocation");
+    }
+
+    // Seek to the page location
+    fileStream.seekp(offset);
+
+    // Initialize an empty page
+    char emptyPage[Page::PAGE_SIZE] = {0};
+    fileStream.write(emptyPage, Page::PAGE_SIZE);
+
+    if (!fileStream) {
+        throw runtime_error("Failed to write new page");
+    }
+
+    fileStream.close();
+    return newPageID;
+}
+
+void FileManager::freePage(int pageID) {
+    // Add the page to our free page list
+    freePageList.push_back(pageID);
+
+    // Update the metadata's free page pointer
+    metadata.freePageStart = pageID;
+    updateMetaData();
+
+    // Zero out the page content for security
+    fileStream.open(fileName, ios::in | ios::out | ios::binary);
+    if (!fileStream) {
+        throw runtime_error("Failed to open file for freeing page");
+    }
+
+    long offset = PAGE_HEADER_SIZE + (pageID * Page::PAGE_SIZE);
+    fileStream.seekp(offset);
+
+    char zeroPage[Page::PAGE_SIZE] = {0};
+    fileStream.write(zeroPage, Page::PAGE_SIZE);
+
+    fileStream.close();
+}
+
 
 
 

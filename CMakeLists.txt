@@ -25,4 +25,24 @@ add_executable(Stealth ${SOURCES}
         src/FileManager.cpp
         include/TransactionManager.h
         src/TransactionManager.cpp
-        include/BPlusTree.h)
+        include/BPlusTreeNode.h
+        include/IndexManager.h
+        include/SecondaryIndex.h
+        src/BPlusTreeNode.cpp
+        include/BPlusTree.h
+        src/BPlusTree.cpp
+        src/SecondaryIndex.cpp
+        include/BulkLoader.h
+        include/IndexStatistics.h
+        src/BulkLoader.cpp
+        src/IndexStatistics.cpp
+        include/IndexQueryProcessor.h
+        src/IndexQueryProcessor.cpp
+        include/HashIndex.h
+        src/HashIndex.cpp
+        include/IndexSelector.h
+        src/IndexSelector.cpp
+        include/IndexMaintenanceCoordinator.h
+        include/PriorityQueue.h
+        src/PriorityQueue.cpp
+        src/IndexMaintenanceCoordinator.cpp)

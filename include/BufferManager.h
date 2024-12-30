@@ -25,6 +25,14 @@ public:
     void unpinPage(int pageID);          //manages page pinning for critical operations
     bool hasSpaceForNewPage() const;     //helps prevent buffer overflow
 
+    //methods for index page handling
+    void pinIndexPage(int pageID);
+    void unpinIndexPage(int pageID);
+    PagePtr getIndexPage(int pageID);
+
+    // Index-specific buffer pool
+    unordered_map<int, PagePtr> indexBufferPool;
+
 private:
     //data structure to represent the buffer pool - in which pointers to page objects will be saved
     unordered_map<int, PagePtr> bufferPool;     //using an unordered hashmap
