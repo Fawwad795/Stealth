@@ -8,7 +8,7 @@ Stealth DBMS is a lightweight, custom-built database management system implement
 
 The system features a custom SQL parser, B+ tree indexing for optimized data access, and persistent file-based storage. It supports essential database operations including table creation, data insertion, complex querying with WHERE clauses, and batch processing capabilities. The project emphasizes the implementation of core computer science concepts in a real-world application context.
 
-## ✨ Features
+## Features
 
 - **DDL Commands**: Create, drop, and manage database tables with custom field definitions
 - **DML Commands**: Full support for SELECT, INSERT, CREATE TABLE, DROP TABLE operations
@@ -81,7 +81,7 @@ This project demonstrates the practical implementation of numerous Data Structur
   - Efficient searching in B+ tree structures
   - Pattern matching for WHERE clause evaluation
 
-## 🚀 Installation & Usage Instructions
+## Installation & Usage Instructions
 
 ### Prerequisites
 
