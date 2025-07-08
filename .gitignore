@@ -29,9 +29,9 @@ Thumbs.db
 
 # Database files (you might want to keep example data)
 # Uncomment the lines below if you want to ignore database files
-# *.txt
-# *.dat
-# *.bin
+*.txt
+*.dat
+*.bin
 
 # Logs
 *.log
